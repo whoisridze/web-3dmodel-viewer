@@ -1,0 +1,141 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --bg-color: #0a0a0a;
+  --text-color: #f5f5f5;
+  --accent-color: #404040;
+  --highlight: #707070;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  overflow: hidden;
+}
+
+header {
+  padding: 1.5rem 2rem;
+  background: rgba(10, 10, 10, 0.8);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: fixed;
+  width: 100%;
+  z-index: 100;
+}
+
+h1 {
+  font-size: 1.6rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.model-info {
+  position: absolute;
+  bottom: 5rem;
+  left: 2rem;
+  padding: 1rem 1.5rem;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+  border-radius: 8px;
+  border-left: 3px solid var(--highlight);
+  max-width: 300px;
+  transform: translateY(20px);
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.model-info.visible {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.model-selector {
+  display: flex;
+  gap: 10px;
+}
+
+.model-btn {
+  background: var(--accent-color);
+  color: var(--text-color);
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.model-btn:hover {
+  background: var(--highlight);
+}
+
+.model-btn.active {
+  background: var(--text-color);
+  color: var(--bg-color);
+}
+
+#webgl {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+footer {
+  text-align: center;
+  padding: 1rem;
+  background: rgba(10, 10, 10, 0.8);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  z-index: 100;
+  font-size: 0.9rem;
+  letter-spacing: 0.05em;
+}
+
+.loader {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px;
+  height: 80px;
+  border: 4px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  border-top: 4px solid var(--text-color);
+  animation: spin 1s linear infinite;
+  z-index: 1000;
+  display: none;
+}
+
+@keyframes spin {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+.loader.visible {
+  display: block;
+}

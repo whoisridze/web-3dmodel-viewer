@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <title>3D Model Viewer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles/main.css" />
+  </head>
+
+  <body>
+    <header>
+      <h1>3D Model Viewer</h1>
+      <div class="model-selector">
+        <button class="model-btn active" data-model="model1.glb">
+          Model 1
+        </button>
+        <button class="model-btn" data-model="model2.glb">Model 2</button>
+        <button class="model-btn" data-model="model3.glb">Model 3</button>
+      </div>
+    </header>
+
+    <div class="loader"></div>
+    <div class="model-info">
+      <h3>Current Model</h3>
+      <p>Click the buttons above to switch between different 3D models.</p>
+    </div>
+
+    <canvas id="webgl"></canvas>
+
+    <footer>
+      <p>© 2025 Modern 3D Model Viewer — Advanced WebGL Implementation</p>
+    </footer>
+
+    <script
+      async
+      src="https://unpkg.com/es-module-shims@1.9.0/dist/es-module-shims.js"
+    ></script>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.176.0/build/three.module.js",
+          "OrbitControls": "https://unpkg.com/three@0.176.0/examples/jsm/controls/OrbitControls.js"
+        }
+      }
+    </script>
+
+    <script type="module" src="js/main.js"></script>
+  </body>
+</html>
