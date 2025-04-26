@@ -38,7 +38,12 @@ controls.autoRotateSpeed = 0.8;
 const loader = new GLTFLoader();
 const modelInfo = document.querySelector(".model-info");
 const loadingIndicator = document.querySelector(".loader");
+const animControls = document.getElementById("animation-controls");
 let currentModel = null;
+let mixer = null;
+let animations = [];
+let isPlaying = false;
+let clock = new THREE.Clock();
 
 const toggleSidebarBtn = document.getElementById("toggle-sidebar");
 const sidebar = document.getElementById("sidebar");
@@ -58,8 +63,16 @@ function loadModel(modelPath) {
     scene.remove(currentModel);
   }
 
+  if (mixer) {
+    mixer = null;
+  }
+  animations = [];
+  isPlaying = false;
+  updateAnimationControls();
+
   loadingIndicator.classList.add("visible");
   modelInfo.classList.remove("visible");
+  document.getElementById("animation-controls").classList.remove("visible");
 
   loader.load(
     `assets/${modelPath}`,
@@ -67,17 +80,107 @@ function loadModel(modelPath) {
       currentModel = gltf.scene;
       scene.add(currentModel);
 
+      if (gltf.animations && gltf.animations.length > 0) {
+        mixer = new THREE.AnimationMixer(currentModel);
+        animations = gltf.animations;
+
+        if (animations.length > 0) {
+          const action = mixer.clipAction(animations[0]);
+          action.play();
+          isPlaying = true;
+        }
+
+        populateAnimationSelector(animations);
+
+        setTimeout(() => {
+          document
+            .getElementById("animation-controls")
+            .classList.add("visible");
+        }, 500);
+      }
+
       fitCameraToObject(camera, currentModel, 1.2);
       controls.target.copy(currentModel.userData.center);
 
       loadingIndicator.classList.remove("visible");
       setTimeout(() => {
         modelInfo.classList.add("visible");
+        updateAnimationControls();
+        updateModelInfo(modelPath, animations.length);
       }, 500);
     },
     undefined,
     (err) => console.error("GLTF error:", err)
   );
+}
+
+function populateAnimationSelector(animations) {
+  const selector = document.getElementById("animation-selector");
+  selector.innerHTML = "";
+
+  animations.forEach((anim, index) => {
+    const option = document.createElement("option");
+    option.value = index;
+    option.textContent = anim.name || `Animation ${index + 1}`;
+    selector.appendChild(option);
+  });
+
+  if (animations.length > 1) {
+    selector.classList.remove("hidden");
+  } else {
+    selector.classList.add("hidden");
+  }
+}
+
+function toggleAnimation() {
+  if (!mixer || animations.length === 0) return;
+
+  if (isPlaying) {
+    mixer.timeScale = 0;
+    isPlaying = false;
+  } else {
+    mixer.timeScale = 1;
+    isPlaying = true;
+  }
+
+  updateAnimationControls();
+}
+
+function playAnimation(index) {
+  if (!mixer || !animations[index]) return;
+
+  mixer.stopAllAction();
+
+  const action = mixer.clipAction(animations[index]);
+  action.reset();
+  action.play();
+  isPlaying = true;
+  updateAnimationControls();
+}
+
+function updateAnimationControls() {
+  const playPauseBtn = document.getElementById("play-pause-btn");
+
+  if (animations.length > 0) {
+    document.getElementById("animation-controls").classList.remove("hidden");
+    playPauseBtn.textContent = isPlaying ? "Pause" : "Play";
+  } else {
+    document.getElementById("animation-controls").classList.add("hidden");
+  }
+}
+
+function updateModelInfo(modelPath, animCount) {
+  const infoTitle = document.querySelector(".model-info h3");
+  const infoText = document.querySelector(".model-info p");
+
+  if (animCount > 0) {
+    infoText.textContent = `This model contains ${animCount} animation${
+      animCount > 1 ? "s" : ""
+    }. Use the controls on the right to play/pause.`;
+  } else {
+    infoText.textContent =
+      "Click the models in the sidebar to switch between different 3D models.";
+  }
 }
 
 const modelButtons = document.querySelectorAll(".model-btn");
@@ -94,9 +197,23 @@ modelButtons.forEach((btn) => {
   });
 });
 
+document
+  .getElementById("play-pause-btn")
+  .addEventListener("click", toggleAnimation);
+document
+  .getElementById("animation-selector")
+  .addEventListener("change", (e) => {
+    playAnimation(parseInt(e.target.value));
+  });
+
 loadModel("model1.glb");
 
 renderer.setAnimationLoop(() => {
+  if (mixer) {
+    const delta = clock.getDelta();
+    mixer.update(delta);
+  }
+
   controls.update();
   renderer.render(scene, camera);
 });

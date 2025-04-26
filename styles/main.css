@@ -240,3 +240,56 @@ footer {
 .model-list .model-btn.active::before {
   opacity: 1;
 }
+
+.animation-controls {
+  position: absolute;
+  bottom: 5rem;
+  right: 2rem;
+  padding: 1rem 1.5rem;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+  border-radius: 8px;
+  border-left: 3px solid var(--highlight);
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  transform: translateY(20px);
+  opacity: 0;
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+.animation-controls.visible {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.anim-btn {
+  background: var(--accent-color);
+  color: var(--text-color);
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.anim-btn:hover {
+  background: var(--highlight);
+}
+
+.animation-selector {
+  background: var(--accent-color);
+  color: var(--text-color);
+  border: none;
+  padding: 0.5rem;
+  border-radius: 4px;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.hidden {
+  display: none !important;
+}
