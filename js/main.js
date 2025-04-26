@@ -40,6 +40,19 @@ const modelInfo = document.querySelector(".model-info");
 const loadingIndicator = document.querySelector(".loader");
 let currentModel = null;
 
+const toggleSidebarBtn = document.getElementById("toggle-sidebar");
+const sidebar = document.getElementById("sidebar");
+const toggleIcon = document.querySelector(".toggle-icon");
+
+toggleSidebarBtn.addEventListener("click", () => {
+  sidebar.classList.toggle("open");
+  if (sidebar.classList.contains("open")) {
+    toggleIcon.textContent = "▲";
+  } else {
+    toggleIcon.textContent = "▼";
+  }
+});
+
 function loadModel(modelPath) {
   if (currentModel) {
     scene.remove(currentModel);
@@ -73,10 +86,15 @@ modelButtons.forEach((btn) => {
     modelButtons.forEach((b) => b.classList.remove("active"));
     btn.classList.add("active");
     loadModel(btn.dataset.model);
+
+    if (window.innerWidth < 768) {
+      sidebar.classList.remove("open");
+      toggleIcon.textContent = "▼";
+    }
   });
 });
 
-loadModel("model123456789.glb");
+loadModel("model1.glb");
 
 renderer.setAnimationLoop(() => {
   controls.update();
@@ -108,3 +126,15 @@ function fitCameraToObject(cam, obj, offset = 1.25) {
   cam.far = distance * 100;
   cam.updateProjectionMatrix();
 }
+
+// Click outside to close sidebar
+document.addEventListener("click", (event) => {
+  if (
+    sidebar.classList.contains("open") &&
+    !sidebar.contains(event.target) &&
+    !toggleSidebarBtn.contains(event.target)
+  ) {
+    sidebar.classList.remove("open");
+    toggleIcon.textContent = "▼";
+  }
+});
