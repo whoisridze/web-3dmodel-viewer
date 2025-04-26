@@ -10,19 +10,36 @@
   <body>
     <header>
       <h1>3D Model Viewer</h1>
-      <div class="model-selector">
+      <button id="toggle-sidebar" class="sidebar-toggle">
+        <span class="toggle-text">Models</span>
+        <span class="toggle-icon">▼</span>
+      </button>
+    </header>
+
+    <div id="sidebar" class="sidebar">
+      <div class="sidebar-header">
+        <h3>Available Models</h3>
+      </div>
+      <div class="model-list">
         <button class="model-btn active" data-model="model1.glb">
           Model 1
         </button>
         <button class="model-btn" data-model="model2.glb">Model 2</button>
         <button class="model-btn" data-model="model3.glb">Model 3</button>
+        <button class="model-btn" data-model="model4.glb">Model 4</button>
+        <button class="model-btn" data-model="model5.glb">Model 5</button>
+        <button class="model-btn" data-model="model6.glb">Model 6</button>
+        <button class="model-btn" data-model="model7.glb">Model 7</button>
+        <button class="model-btn" data-model="model8.glb">Model 8</button>
       </div>
-    </header>
+    </div>
 
     <div class="loader"></div>
     <div class="model-info">
       <h3>Current Model</h3>
-      <p>Click the buttons above to switch between different 3D models.</p>
+      <p>
+        Click the models in the sidebar to switch between different 3D models.
+      </p>
     </div>
 
     <canvas id="webgl"></canvas>
