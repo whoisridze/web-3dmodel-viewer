@@ -62,7 +62,7 @@ function loadModel(modelPath) {
   modelInfo.classList.remove("visible");
 
   loader.load(
-    `/assets/${modelPath}`,
+    `assets/${modelPath}`,
     (gltf) => {
       currentModel = gltf.scene;
       scene.add(currentModel);
@@ -127,7 +127,6 @@ function fitCameraToObject(cam, obj, offset = 1.25) {
   cam.updateProjectionMatrix();
 }
 
-// Click outside to close sidebar
 document.addEventListener("click", (event) => {
   if (
     sidebar.classList.contains("open") &&
