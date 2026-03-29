@@ -1,107 +1,87 @@
-# Modern 3D Model Viewer
-
 <div align="center">
-  <img src="https://img.shields.io/badge/Three.js-0.176.0-blue.svg" alt="Three.js version">
-  <img src="https://img.shields.io/badge/Platform-WebGL-blue.svg" alt="Platform: WebGL">
+
+# 3D Model Viewer
+
+[![Three.js](https://img.shields.io/badge/-Three.js%20r176-black.svg?logo=threedotjs&labelColor=555555&style=for-the-badge)](https://threejs.org/)
+[![WebGL](https://img.shields.io/badge/-WebGL-red.svg?logo=webgl&labelColor=555555&style=for-the-badge)](https://get.webgl.org/)
+[![GitHub Pages](https://img.shields.io/badge/-Live%20Demo-brightgreen.svg?logo=github&labelColor=555555&style=for-the-badge)](https://whoisridze.github.io/web-3dmodel-viewer/)
+
+*Browser-based 3D model viewer with drag-and-drop support*
+
 </div>
 
-## 📸 Preview
-
 <div align="center">
-  <img src="assets/preview.png" width="800" alt="3D Model Viewer demo">
+  <img src="assets/preview.png" width="800" alt="3D Model Viewer preview">
 </div>
 
-## 🎨 About The Project
+## What is this?
 
-Modern 3D Model Viewer is a lightweight, fully static web application for loading, inspecting and interacting with glTF (`.glb`) 3D models directly in the browser. It provides smooth orbit controls, a toggleable sidebar for picking models, and built-in animation playback—perfect for designers, developers or anyone showcasing 3D content online.
+A browser-based 3D model viewer. Load `.glb` models from the built-in library or drag-and-drop your own files — no install, no backend, just open the page.
 
-## ✨ Key Features
+Built with Three.js and vanilla JavaScript. No bundler, no framework, no dependencies to install.
 
-- **🖼️ Dynamic Model Loading**  
-  Load any `.glb` file placed in the `assets/` folder with a single click—no rebuild required
-- **🔄 Sidebar Navigation**  
-  Responsive, toggleable sidebar listing all available models; click to switch
-- **🎮 Camera Controls**  
-  Intuitive orbit, zoom and pan powered by `OrbitControls` with damping and auto-rotate
-- **⏯️ Animation Playback**  
-  Detects embedded animations in the model and lets you play, pause or switch clips
-- **⚙️ Loading Indicator**  
-  Custom CSS-animated loader during model fetch for a polished UX
-- **🎨 Theme Customization**  
-  Tweak fonts and colors via CSS variables in `main.css`
+## Features
 
-## 🛠️ Tech Stack
+- **Drag & drop** any `.glb` file onto the page to view it instantly
+- **8 sample models** in the sidebar to browse
+- **Orbit controls** — rotate, zoom, pan with mouse or touch
+- **Animation playback** — play/pause and switch between embedded clips
+- **Responsive** sidebar with mobile support
+- **Accessible** — keyboard navigation, ARIA attributes, focus indicators
 
-- **Three.js** (r0.176.0) for WebGL rendering
-- **GLTFLoader** for glTF 2.0 model import
-- **OrbitControls** for camera interaction
-- **Vanilla JavaScript** with ES module import maps
-- **CSS Variables** and modern layout techniques in `main.css`
+## Usage
 
-## 🚀 Getting Started
+Open the [live demo](https://whoisridze.github.io/web-3dmodel-viewer/) or serve locally:
 
-### Prerequisites
+```bash
+# Using VS Code Live Server extension (recommended):
+# Right-click index.html → Open with Live Server
 
-A simple static file server (e.g., [http-server](https://www.npmjs.com/package/http-server), Python’s `http.server`, or any equivalent).
-
-### Installation
-
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/yourusername/web-3dmodel-viewer.git
-   cd web-3dmodel-viewer
-   ```
-2. **Serve the files (Option A - VS Code Live Server Extension):**
-
-   - Open the project folder in Visual Studio Code.
-   - Install the Live Server extension by Ritwick Dey.
-   - Click the Go Live button in the status bar or right-click `index.html` and select Open with Live Server.
-   - The application will automatically open in your default browser and reload on changes.
-
-   **Serve the files (Option B):**
-
-   - Using a static server:
-     ```bash
-     npx http-server .    # or python3 -m http.server 8080
-     ```
-   - Navigate to `http://localhost:8080` (or your server’s address).
-
-### Usage
-
-1. Click the **Models** button in the header to open the sidebar.
-2. Select a model from the list to load it.
-3. Use your mouse (or touch) to orbit, zoom and pan around the model.
-4. If the model contains animations, use the bottom-right controls to play, pause or switch between clips.
-
-## 📂 Project Structure
-
-```
-├── index.html         # Entry point, importmaps & layout
-├── styles/
-│   └── main.css       # Theme, layout and loader styles
-├── js/
-│   └── main.js        # Three.js scene setup, loaders & controls
-├── assets/
-│   └── *.glb          # Your glTF 3D model files
-└── README.md          # This documentation
+# Or via terminal:
+npx http-server . -p 8080
+# Or: python3 -m http.server 8080
 ```
 
-## 🔧 Customization
+To view your own models, either:
+- Drag a `.glb` file anywhere onto the page
+- Click **Models > Load Your Model** in the sidebar
 
-- **Adding Models:**
-  1. Copy your `.glb` file into `assets/`.
-  2. Add a new `<button class="model-btn" data-model="yourModel.glb">Your Model</button>` in the sidebar of `index.html`.
-- **Theming:**  
-  Modify the CSS variables under `:root` in `main.css` to adjust background, accent and highlight colors.
-- **Control Settings:**  
-  Tweak `controls.autoRotateSpeed`, `controls.dampingFactor` and camera FOV in `main.js` to your liking.
+## Project structure
 
-## 🤝 Contributing
+```
+index.html              Entry point with import maps
+js/
+  main.js               Wires modules together, render loop
+  scene.js              Three.js scene, camera, lights, controls
+  model-loader.js       GLTF loading, disposal, camera fitting
+  animation.js          AnimationMixer lifecycle
+  ui.js                 Sidebar, info panels, loading states
+  file-input.js         Drag-and-drop and file picker
+  config.js             Named constants
+styles/
+  main.css              Theming via CSS variables, layout
+assets/
+  *.glb                 Sample 3D models
+```
 
-Contributions are very welcome!
+## Adding sample models
 
-1. Fork the repo
-2. Create a feature branch (`git checkout -b feature/YourFeature`)
-3. Commit your changes (`git commit -m "Add YourFeature"`)
-4. Push to your branch (`git push origin feature/YourFeature`)
-5. Open a Pull Request
+1. Drop a `.glb` file into `assets/`
+2. Add a button to the sidebar in `index.html`:
+
+```html
+<button class="model-btn" data-model="your-model.glb">Your Model</button>
+```
+
+## Theming
+
+Edit the CSS variables in `styles/main.css`:
+
+```css
+:root {
+  --bg-color: #0a0a0a;
+  --text-color: #f5f5f5;
+  --accent-color: #404040;
+  --highlight: #707070;
+}
+```
