@@ -152,3 +152,29 @@ export function populateAnimationSelector(animations) {
     animSelector.classList.add("hidden");
   }
 }
+
+/**
+ * Clears the active state from all model buttons.
+ * Used when loading a user-provided model file.
+ */
+export function clearModelButtonsActive() {
+  const modelButtons = document.querySelectorAll(".model-list .model-btn");
+  modelButtons.forEach((btn) => btn.classList.remove("active"));
+}
+
+/**
+ * Shows info text for a user-loaded model.
+ * @param {string} filename - The name of the loaded file
+ * @param {number} animCount - Number of animations in the model
+ */
+export function showUserModelInfo(filename, animCount) {
+  modelInfo.classList.add("visible");
+  infoTitle.textContent = filename;
+  if (animCount > 0) {
+    infoText.textContent = `Your model contains ${animCount} animation${
+      animCount > 1 ? "s" : ""
+    }. Use the controls on the right to play/pause.`;
+  } else {
+    infoText.textContent = "Your model is loaded. Use the mouse to rotate, zoom, and pan.";
+  }
+}

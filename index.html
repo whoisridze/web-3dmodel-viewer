@@ -38,6 +38,10 @@
       <div class="sidebar-header">
         <h3>Available Models</h3>
       </div>
+      <div class="file-input-wrapper">
+        <input type="file" id="file-input" accept=".glb,.gltf" hidden aria-label="Select a GLB or GLTF model file" />
+        <button id="load-file-btn" class="model-btn load-file-btn">Load Your Model</button>
+      </div>
       <div class="model-list">
         <button class="model-btn active" data-model="model1.glb">
           Model 1
@@ -61,6 +65,13 @@
     </div>
 
     <canvas id="webgl" role="img" aria-label="3D model viewer"></canvas>
+
+    <div id="drop-zone" class="drop-zone" aria-hidden="true">
+      <div class="drop-zone-content">
+        <span class="drop-zone-icon">+</span>
+        <p>Drop .glb or .gltf file here</p>
+      </div>
+    </div>
 
     <div id="webgl-fallback" class="webgl-fallback">
       <h2>WebGL Not Supported</h2>

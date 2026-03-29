@@ -4,6 +4,7 @@ import { CAMERA_OFFSET } from "./config.js";
 
 const loader = new GLTFLoader();
 let currentModel = null;
+let currentBlobUrl = null;
 
 /**
  * Disposes a 3D model and releases all GPU resources.
@@ -73,8 +74,18 @@ export function fitCameraToObject(cam, obj, offset = CAMERA_OFFSET) {
 }
 
 /**
+ * Revokes the current blob URL if one exists.
+ */
+function revokeBlobUrl() {
+  if (currentBlobUrl) {
+    URL.revokeObjectURL(currentBlobUrl);
+    currentBlobUrl = null;
+  }
+}
+
+/**
  * Loads a GLTF model, disposing the previous one first.
- * @param {string} modelPath - Filename inside assets/
+ * @param {string} modelPath - Filename inside assets/, or a blob: URL for user files
  * @param {object} deps - scene, camera, controls, and callback hooks
  */
 export function loadModel(modelPath, { scene, camera, controls, onBeforeLoad, onLoaded, onError, onProgress }) {
@@ -83,11 +94,14 @@ export function loadModel(modelPath, { scene, camera, controls, onBeforeLoad, on
     scene.remove(currentModel);
   }
   currentModel = null;
+  revokeBlobUrl();
 
   if (onBeforeLoad) onBeforeLoad();
 
+  const url = modelPath.startsWith("blob:") ? modelPath : `assets/${modelPath}`;
+
   loader.load(
-    `assets/${modelPath}`,
+    url,
     (gltf) => {
       currentModel = gltf.scene;
       scene.add(currentModel);
@@ -108,4 +122,16 @@ export function loadModel(modelPath, { scene, camera, controls, onBeforeLoad, on
       if (onError) onError(error, modelPath);
     }
   );
+}
+
+/**
+ * Loads a GLTF model from a File object.
+ * Creates a blob URL, loads the model, and tracks it for cleanup.
+ * @param {File} file - The File object from file input or drag-and-drop
+ * @param {object} deps - scene, camera, controls, and callback hooks
+ */
+export function loadModelFromFile(file, deps) {
+  const blobUrl = URL.createObjectURL(file);
+  currentBlobUrl = blobUrl;
+  loadModel(blobUrl, deps);
 }

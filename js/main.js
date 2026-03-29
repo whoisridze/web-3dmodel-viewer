@@ -1,5 +1,5 @@
 import { checkWebGLSupport, createScene } from "./scene.js";
-import { loadModel } from "./model-loader.js";
+import { loadModel, loadModelFromFile } from "./model-loader.js";
 import {
   resetAnimations,
   setupAnimations,
@@ -16,12 +16,15 @@ import {
   showLoading,
   hideLoading,
   showModelInfo,
+  showUserModelInfo,
   showError,
   showAnimationControls,
   updateAnimationUI,
   populateAnimationSelector,
   updateLoadingProgress,
+  clearModelButtonsActive,
 } from "./ui.js";
+import { initFileInput } from "./file-input.js";
 import { ANIMATION_FADE_DELAY } from "./config.js";
 
 document.getElementById("year").textContent = new Date().getFullYear();
@@ -96,9 +99,51 @@ function handlePlayAnimation(index) {
   updateAnimationUI(getAnimations(), getIsPlaying());
 }
 
+function handleFileSelect(file) {
+  clearModelButtonsActive();
+  resetAnimations();
+  updateAnimationUI(getAnimations(), getIsPlaying());
+
+  loadModelFromFile(file, {
+    scene,
+    camera,
+    controls,
+
+    onBeforeLoad() {
+      showLoading();
+    },
+
+    onProgress(percent) {
+      updateLoadingProgress(percent);
+    },
+
+    onLoaded(gltf) {
+      if (gltf.animations && gltf.animations.length > 0) {
+        setupAnimations(gltf.scene, gltf.animations);
+        populateAnimationSelector(gltf.animations);
+        setTimeout(() => showAnimationControls(), ANIMATION_FADE_DELAY);
+      }
+
+      hideLoading();
+      setTimeout(() => {
+        const anims = getAnimations();
+        showUserModelInfo(file.name, anims.length);
+        updateAnimationUI(anims, getIsPlaying());
+      }, ANIMATION_FADE_DELAY);
+    },
+
+    onError(error) {
+      showError("Loading Error", `Failed to load "${file.name}". The file may be corrupted or not a valid GLTF/GLB model.`);
+    },
+  });
+}
+
 // ── UI wiring ───────────────────────────────────────────────
 initSidebar();
 initModelButtons(handleLoadModel);
+initFileInput(handleFileSelect, (filename) => {
+  showError("Invalid File", `"${filename}" is not a supported format. Please use .glb or .gltf files.`);
+});
 initAnimationControls({
   onToggle: handleToggleAnimation,
   onSelect: handlePlayAnimation,
