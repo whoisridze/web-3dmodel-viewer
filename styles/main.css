@@ -196,6 +196,8 @@ footer {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent-color) rgba(0, 0, 0, 0.2);
 }
 
 .model-list::-webkit-scrollbar {
@@ -290,6 +292,65 @@ footer {
   cursor: pointer;
 }
 
+.webgl-fallback {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 480px;
+  padding: 2rem;
+  background: rgba(10, 10, 10, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  border-left: 3px solid #cc3333;
+  text-align: left;
+  z-index: 1000;
+  display: none;
+}
+
+.webgl-fallback.visible {
+  display: block;
+}
+
+.webgl-fallback h2 {
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+  color: #cc3333;
+}
+
+.webgl-fallback p {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin-bottom: 0.75rem;
+}
+
+.webgl-fallback ul {
+  list-style: disc;
+  padding-left: 1.5rem;
+  font-size: 0.9rem;
+  line-height: 1.8;
+}
+
 .hidden {
   display: none !important;
+}
+
+.model-btn:focus-visible,
+.sidebar-toggle:focus-visible,
+.anim-btn:focus-visible,
+.animation-selector:focus-visible {
+  outline: 2px solid var(--text-color);
+  outline-offset: 2px;
+}
+
+.loader-progress {
+  position: fixed;
+  top: calc(50% + 50px);
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.85rem;
+  color: var(--text-color);
+  opacity: 0.7;
+  z-index: 1000;
+  display: none;
 }

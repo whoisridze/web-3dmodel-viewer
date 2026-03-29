@@ -1,0 +1,13 @@
+export const FOV = 45;
+export const NEAR_PLANE = 0.1;
+export const FAR_PLANE = 1000;
+export const DAMPING_FACTOR = 0.05;
+export const AUTO_ROTATE_SPEED = 0.8;
+export const CAMERA_OFFSET = 1.25;
+export const ANIMATION_FADE_DELAY = 500;
+export const MOBILE_BREAKPOINT = 768;
+export const GRID_SIZE = 20;
+export const GRID_DIVISIONS = 20;
+export const AMBIENT_LIGHT_INTENSITY = 0.6;
+export const DIR_LIGHT_INTENSITY = 1.2;
+export const RIM_LIGHT_INTENSITY = 0.5;

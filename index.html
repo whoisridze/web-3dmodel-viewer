@@ -1,22 +1,40 @@
 <!DOCTYPE html>
-<html lang="uk">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>3D Model Viewer</title>
+    <title>3D Model Viewer — Interactive WebGL Experience</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Interactive 3D model viewer built with Three.js and WebGL. Browse, rotate, and animate GLTF models in real time." />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="3D Model Viewer" />
+    <meta property="og:description" content="Interactive 3D model viewer built with Three.js and WebGL. Browse, rotate, and animate GLTF models in real time." />
+    <meta property="og:image" content="assets/preview.png" />
+    <meta property="og:type" content="website" />
+
+    <!-- Favicon (inline SVG data-URI — no extra file needed) -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧊</text></svg>" />
+
     <link rel="stylesheet" href="styles/main.css" />
+
+    <noscript>
+      <style>
+        canvas, .loader, .animation-controls, #sidebar, .sidebar-toggle { display: none !important; }
+        .model-info { display: block !important; }
+      </style>
+    </noscript>
   </head>
 
   <body>
     <header>
       <h1>3D Model Viewer</h1>
-      <button id="toggle-sidebar" class="sidebar-toggle">
+      <button id="toggle-sidebar" class="sidebar-toggle" aria-expanded="false" aria-controls="sidebar">
         <span class="toggle-text">Models</span>
         <span class="toggle-icon">▼</span>
       </button>
     </header>
 
-    <div id="sidebar" class="sidebar">
+    <div id="sidebar" class="sidebar" role="region" aria-label="Model selection sidebar">
       <div class="sidebar-header">
         <h3>Available Models</h3>
       </div>
@@ -42,25 +60,53 @@
       </p>
     </div>
 
-    <canvas id="webgl"></canvas>
+    <canvas id="webgl" role="img" aria-label="3D model viewer"></canvas>
 
-    <div id="animation-controls" class="animation-controls hidden">
+    <div id="webgl-fallback" class="webgl-fallback">
+      <h2>WebGL Not Supported</h2>
+      <p>
+        Your browser or device does not support WebGL, which is required to
+        display 3D models. Please try:
+      </p>
+      <ul>
+        <li>Updating your browser to the latest version</li>
+        <li>Enabling hardware acceleration in your browser settings</li>
+        <li>Using a different browser (Chrome, Firefox, or Edge)</li>
+      </ul>
+    </div>
+
+    <noscript>
+      <div class="webgl-fallback" style="display:flex">
+        <h2>JavaScript Required</h2>
+        <p>This 3D model viewer requires JavaScript to run. Please enable JavaScript in your browser settings and reload the page.</p>
+      </div>
+    </noscript>
+
+    <div id="animation-controls" class="animation-controls hidden" aria-label="Animation controls">
       <select
         id="animation-selector"
         class="animation-selector hidden"
+        aria-label="Select animation"
       ></select>
       <button id="play-pause-btn" class="anim-btn">Pause</button>
     </div>
 
     <footer>
-      <p>© 2025 Modern 3D Model Viewer — Advanced WebGL Implementation</p>
+      <p>© <span id="year"></span> Modern 3D Model Viewer — Advanced WebGL Implementation</p>
     </footer>
 
     <script
       async
       src="https://unpkg.com/es-module-shims@1.9.0/dist/es-module-shims.js"
+      integrity="sha384-273gxcBFhC5ijXNoJK1lOPU3SxtBi++d0MKrbX9ajsAeCuuRQKTWhuaEdPd2onMA"
+      crossorigin="anonymous"
     ></script>
 
+    <!--
+      Import map URLs cannot carry SRI integrity attributes natively.
+      The import map spec does not support integrity metadata yet.
+      See: https://github.com/WICG/import-maps/issues/174
+    -->
     <script type="importmap">
       {
         "imports": {
