@@ -133,7 +133,7 @@ function handleFileSelect(file) {
     },
 
     onError(error) {
-      showError("Loading Error", `Failed to load "${file.name}". The file may be corrupted or not a valid GLTF/GLB model.`);
+      showError("Loading Error", `Failed to load "${file.name}". The file may be corrupted or not a valid GLB model.`);
     },
   });
 }
@@ -142,7 +142,7 @@ function handleFileSelect(file) {
 initSidebar();
 initModelButtons(handleLoadModel);
 initFileInput(handleFileSelect, (filename) => {
-  showError("Invalid File", `"${filename}" is not a supported format. Please use .glb or .gltf files.`);
+  showError("Invalid File", `"${filename}" is not a supported format. Please use .glb files.`);
 });
 initAnimationControls({
   onToggle: handleToggleAnimation,

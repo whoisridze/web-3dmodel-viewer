@@ -4,7 +4,6 @@ import { CAMERA_OFFSET } from "./config.js";
 
 const loader = new GLTFLoader();
 let currentModel = null;
-let currentBlobUrl = null;
 
 /**
  * Disposes a 3D model and releases all GPU resources.
@@ -74,18 +73,8 @@ export function fitCameraToObject(cam, obj, offset = CAMERA_OFFSET) {
 }
 
 /**
- * Revokes the current blob URL if one exists.
- */
-function revokeBlobUrl() {
-  if (currentBlobUrl) {
-    URL.revokeObjectURL(currentBlobUrl);
-    currentBlobUrl = null;
-  }
-}
-
-/**
  * Loads a GLTF model, disposing the previous one first.
- * @param {string} modelPath - Filename inside assets/, or a blob: URL for user files
+ * @param {string} modelPath - Filename inside assets/
  * @param {object} deps - scene, camera, controls, and callback hooks
  */
 export function loadModel(modelPath, { scene, camera, controls, onBeforeLoad, onLoaded, onError, onProgress }) {
@@ -94,14 +83,11 @@ export function loadModel(modelPath, { scene, camera, controls, onBeforeLoad, on
     scene.remove(currentModel);
   }
   currentModel = null;
-  revokeBlobUrl();
 
   if (onBeforeLoad) onBeforeLoad();
 
-  const url = modelPath.startsWith("blob:") ? modelPath : `assets/${modelPath}`;
-
   loader.load(
-    url,
+    `assets/${modelPath}`,
     (gltf) => {
       currentModel = gltf.scene;
       scene.add(currentModel);
@@ -125,13 +111,52 @@ export function loadModel(modelPath, { scene, camera, controls, onBeforeLoad, on
 }
 
 /**
- * Loads a GLTF model from a File object.
- * Creates a blob URL, loads the model, and tracks it for cleanup.
+ * Loads a GLTF model from a File object using FileReader + GLTFLoader.parse().
+ * This avoids blob URL resolution issues with external resources.
  * @param {File} file - The File object from file input or drag-and-drop
  * @param {object} deps - scene, camera, controls, and callback hooks
  */
-export function loadModelFromFile(file, deps) {
-  const blobUrl = URL.createObjectURL(file);
-  currentBlobUrl = blobUrl;
-  loadModel(blobUrl, deps);
+export function loadModelFromFile(file, { scene, camera, controls, onBeforeLoad, onLoaded, onError, onProgress }) {
+  if (currentModel) {
+    disposeModel(currentModel);
+    scene.remove(currentModel);
+  }
+  currentModel = null;
+
+  if (onBeforeLoad) onBeforeLoad();
+
+  const reader = new FileReader();
+
+  reader.onprogress = (event) => {
+    if (event.lengthComputable && onProgress) {
+      onProgress(Math.round((event.loaded / event.total) * 100));
+    }
+  };
+
+  reader.onload = (event) => {
+    loader.parse(
+      event.target.result,
+      "",
+      (gltf) => {
+        currentModel = gltf.scene;
+        scene.add(currentModel);
+
+        fitCameraToObject(camera, currentModel);
+        controls.target.copy(currentModel.userData.center);
+
+        if (onLoaded) onLoaded(gltf);
+      },
+      (error) => {
+        console.error("GLTF parse error:", error);
+        currentModel = null;
+        if (onError) onError(error, file.name);
+      }
+    );
+  };
+
+  reader.onerror = () => {
+    if (onError) onError(new Error("Failed to read file"), file.name);
+  };
+
+  reader.readAsArrayBuffer(file);
 }

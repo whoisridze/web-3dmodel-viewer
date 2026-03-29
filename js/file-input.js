@@ -1,4 +1,4 @@
-const VALID_EXTENSIONS = [".glb", ".gltf"];
+const VALID_EXTENSIONS = [".glb"];
 
 const fileInput = document.getElementById("file-input");
 const loadFileBtn = document.getElementById("load-file-btn");
@@ -9,7 +9,7 @@ let dragCounter = 0;
 /**
  * Checks if a file has a valid 3D model extension.
  * @param {File} file - The file to validate
- * @returns {boolean} True if the file is a valid GLB or GLTF
+ * @returns {boolean} True if the file is a valid GLB
  */
 function isValidModelFile(file) {
   const name = file.name.toLowerCase();
