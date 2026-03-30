@@ -4,6 +4,7 @@ import { CAMERA_OFFSET } from "./config.js";
 
 const loader = new GLTFLoader();
 let currentModel = null;
+const gltfCache = new Map();
 
 /**
  * Disposes a 3D model and releases all GPU resources.
@@ -79,16 +80,28 @@ export function fitCameraToObject(cam, obj, offset = CAMERA_OFFSET) {
  */
 export function loadModel(modelPath, { scene, camera, controls, onBeforeLoad, onLoaded, onError, onProgress }) {
   if (currentModel) {
-    disposeModel(currentModel);
     scene.remove(currentModel);
   }
   currentModel = null;
 
   if (onBeforeLoad) onBeforeLoad();
 
+  // Serve from cache if available
+  if (gltfCache.has(modelPath)) {
+    const cached = gltfCache.get(modelPath);
+    currentModel = cached.scene;
+    scene.add(currentModel);
+    fitCameraToObject(camera, currentModel);
+    controls.target.copy(currentModel.userData.center);
+    if (onProgress) onProgress(100);
+    if (onLoaded) onLoaded(cached);
+    return;
+  }
+
   loader.load(
     `assets/${modelPath}`,
     (gltf) => {
+      gltfCache.set(modelPath, gltf);
       currentModel = gltf.scene;
       scene.add(currentModel);
 
