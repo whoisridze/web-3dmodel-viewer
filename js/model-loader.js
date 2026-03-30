@@ -99,7 +99,7 @@ export function loadModel(modelPath, { scene, camera, controls, onBeforeLoad, on
     },
     (event) => {
       if (event.lengthComputable && onProgress) {
-        onProgress(Math.round((event.loaded / event.total) * 100));
+        onProgress(Math.min(100, Math.round((event.loaded / event.total) * 100)));
       }
     },
     (error) => {
@@ -129,7 +129,7 @@ export function loadModelFromFile(file, { scene, camera, controls, onBeforeLoad,
 
   reader.onprogress = (event) => {
     if (event.lengthComputable && onProgress) {
-      onProgress(Math.round((event.loaded / event.total) * 100));
+      onProgress(Math.min(100, Math.round((event.loaded / event.total) * 100)));
     }
   };
 
